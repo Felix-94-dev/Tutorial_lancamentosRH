@@ -1,0 +1,515 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Treinamento Lançamentos RH</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Hanken+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: palco com a tela do sistema à esquerda, Lia à direita, legendas embaixo da tela; capítulos abaixo. */
+:root{
+  --bg:#edf2ee; --surface:#fbfdfb; --ink:#13231b; --muted:#5a6b62; --line:#cfdbd2;
+  --accent:#1a6b4d; --accent-ink:#ffffff; --app:#f1f6f2; --lock:#e1e9e3;
+  --warn-bg:#fcefb4; --warn-line:#dcc04a; --warn-ink:#5b4a05;
+  --ok-bg:#cfe9db; --ok-line:#7bbd98; --ok-ink:#12513a;
+  --calc:#f7dcc2; --hl:#ff7a1a; --dim:rgba(8,20,14,.5); --capbg:#0d1712; --liabg:#d7e8dd; --err:#b3261e;
+  --display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --body:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1511; --surface:#15211b; --ink:#e4eee8; --muted:#97a99f; --line:#2b3c33;
+  --accent:#4cc08c; --accent-ink:#06150e; --app:#101a15; --lock:#1f2c25;
+  --warn-bg:#4a3f10; --warn-line:#a98f25; --warn-ink:#f3e3a0;
+  --ok-bg:#1c4430; --ok-line:#3b8a62; --ok-ink:#bfeed6;
+  --calc:#4a3421; --hl:#ff9a3d; --liabg:#23352b; --err:#ff8a80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1511; --surface:#15211b; --ink:#e4eee8; --muted:#97a99f; --line:#2b3c33;
+  --accent:#4cc08c; --accent-ink:#06150e; --app:#101a15; --lock:#1f2c25;
+  --warn-bg:#4a3f10; --warn-line:#a98f25; --warn-ink:#f3e3a0;
+  --ok-bg:#1c4430; --ok-line:#3b8a62; --ok-ink:#bfeed6;
+  --calc:#4a3421; --hl:#ff9a3d; --liabg:#23352b; --err:#ff8a80; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+header h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,4.4vw,40px);line-height:1.08;margin:2px 0 6px;text-wrap:balance;letter-spacing:-.01em}
+.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:700}
+header p{margin:0;color:var(--muted);max-width:62ch}
+button{font:inherit;color:inherit}
+button:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* palco */
+.sw{background:var(--bg)}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) clamp(150px,22%,230px);grid-template-areas:"screen pres" "cap pres";gap:12px}
+.screen{grid-area:screen;position:relative;aspect-ratio:7/4;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--app);min-width:0}
+.win{position:absolute;left:0;top:0;width:700px;height:400px;transform-origin:0 0;background:var(--app);color:var(--ink);font-size:12px;line-height:1.35;overflow:hidden;font-family:var(--body)}
+.win *{box-sizing:border-box}
+.win.enter>*{animation:fadein .35s ease both}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.cap{grid-area:cap;background:var(--capbg);color:#fff;border-radius:10px;padding:12px 18px;min-height:5.8em;display:flex;align-items:center}
+.cap p{margin:0;font-size:clamp(15px,1.9vw,19px);line-height:1.4;text-wrap:pretty}
+.pres{grid-area:pres;background:var(--liabg);border-radius:12px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;overflow:hidden}
+.plate{padding:14px 14px 0;display:flex;flex-direction:column;gap:2px}
+.plate b{font-family:var(--display);font-size:20px;line-height:1.1}
+.plate .pl{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.plate .sc{font-size:14px;font-weight:700;margin-top:8px;color:var(--ink)}
+.lia svg{display:block;width:100%;height:auto;max-height:100%}
+.bob{animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.eyes{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.mouth .open{opacity:0;transform-box:fill-box;transform-origin:center}
+.talking .mouth .smile{opacity:0}
+.talking .mouth .open{opacity:1;animation:talk .26s ease-in-out infinite alternate}
+@keyframes talk{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+
+/* sobreposição inicial */
+.ov{position:absolute;inset:0;background:rgba(8,20,14,.62);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;text-align:center;z-index:5}
+.ov[hidden]{display:none}
+.ov p{margin:0;color:#fff;max-width:44ch;font-size:15px}
+.big{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:99px;padding:14px 26px;font-weight:700;font-size:18px;cursor:pointer;font-family:var(--display)}
+
+/* progresso e controles */
+.prog{display:flex;gap:6px}
+.seg{flex:var(--n) 1 0;min-width:0;background:none;border:0;padding:0;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:5px}
+.seg .bar0{height:7px;border-radius:4px;background:var(--line);overflow:hidden}
+.seg .bar0 i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.seg .lb{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg.on .lb{color:var(--ink);font-weight:700}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cb{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 13px;font-weight:500;font-size:14px;cursor:pointer;min-height:40px}
+.cb.p{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;min-width:132px;justify-content:center}
+.cb[aria-pressed="false"]{color:var(--muted)}
+.cb svg{flex:none}
+select.cb{padding-right:8px}
+.ctl .sp{flex:1}
+.note{font-size:13px;color:var(--muted);margin:0}
+
+/* capítulos */
+.chs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 18px;margin-top:6px}
+.chs h3{font-family:var(--display);font-size:14px;margin:0 0 6px;font-weight:700}
+.chs ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.chb{width:100%;text-align:left;background:none;border:0;border-radius:6px;padding:5px 8px;cursor:pointer;font-size:14px;display:flex;gap:8px;color:var(--muted)}
+.chb:hover{background:var(--surface);color:var(--ink)}
+.chb.on{background:var(--surface);color:var(--ink);font-weight:700;box-shadow:inset 0 0 0 1px var(--line)}
+.chb .nn{font-family:var(--mono);font-size:12px;min-width:1.6em;color:var(--accent);padding-top:1px}
+
+@media (max-width:700px){
+  .stage{grid-template-columns:84px minmax(0,1fr);grid-template-areas:"screen screen" "pres cap"}
+  .plate{display:none}
+  .pres{justify-content:flex-end}
+  .cap{min-height:6.4em;padding:10px 14px}
+  .seg .lb{display:none}
+  .cb{padding:8px 10px;font-size:13px}
+  .cb.p{min-width:0}
+  .ov p{font-size:13px}
+  .big{font-size:15px;padding:11px 20px}
+}
+:fullscreen.sw{padding:12px;overflow:auto;display:flex;flex-direction:column;justify-content:center}
+
+/* ---- elementos da tela do sistema (ilustração) ---- */
+.hl{outline:3px solid var(--hl);outline-offset:2px;border-radius:6px;position:relative;z-index:3;animation:pulse 1.2s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,122,26,.55)}100%{box-shadow:0 0 0 11px rgba(255,122,26,0)}}
+.ghost{opacity:0;transition:opacity .2s}.ghost.hl{opacity:1}
+.tbar{display:flex;align-items:center;gap:12px;height:34px;padding:0 12px;background:var(--surface);border-bottom:1px solid var(--line);white-space:nowrap}
+.brand{font-weight:700}
+.tab{color:var(--muted);padding:9px 0 7px;border-bottom:2px solid transparent}
+.tab.on{color:var(--accent);border-color:var(--accent);font-weight:700}
+.sp{flex:1}
+.user{color:var(--muted);font-size:11px}
+.mb{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border:1px solid var(--line);border-radius:5px;background:var(--surface);font-size:11.5px;white-space:nowrap}
+.mb.p{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.mb.off{opacity:.45}
+.body{padding:10px 12px;position:relative}
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.in{border:1px solid var(--line);background:var(--surface);border-radius:5px;padding:4px 8px;min-height:24px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.in.lock{background:var(--lock);color:var(--muted)}
+.in.ph{color:var(--muted)}
+.in.er{border-color:var(--err)}
+.f>span{display:block;font-size:10.5px;color:var(--muted);margin-bottom:2px}
+.f{min-width:0}
+.bdg{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700;white-space:nowrap}
+.b0{background:var(--lock);color:var(--muted)}
+.b1{background:var(--warn-bg);color:var(--warn-ink)}
+.b2{background:var(--ok-bg);color:var(--ok-ink)}
+.b3{background:var(--ink);color:var(--surface)}
+.row{display:grid;align-items:center;border-bottom:1px solid var(--line);padding:5px 4px;font-size:11.5px;column-gap:6px}
+.row.h{color:var(--muted);font-size:10.5px;font-weight:700}
+.row.dm{opacity:.5}
+.r{text-align:right}
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:0 6px;overflow:hidden}
+.ec{border:1px solid var(--line);border-radius:6px;padding:7px 9px;background:var(--surface)}
+.ec.y{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn-ink)}
+.ec.g{background:var(--ok-bg);border-color:var(--ok-line);color:var(--ok-ink)}
+.ec.dis{opacity:.5}
+.ec b{display:block;font-size:12.5px}.ec small{display:block;opacity:.8;font-size:10.5px}.ec em{font-style:normal;font-weight:700;font-size:11px}
+.dim{position:absolute;inset:0;background:var(--dim);z-index:1}
+.md{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:2;display:flex;flex-direction:column;gap:8px}
+.mh{font-weight:700;font-size:13px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px 8px}
+.mf{display:flex;justify-content:flex-end;gap:8px}
+.ck{display:inline-flex;align-items:center;gap:6px;font-size:11.5px}
+.bx{display:inline-block;width:13px;height:13px;border:1.5px solid var(--muted);border-radius:3px;position:relative;flex:none}
+.bx.on{background:var(--accent);border-color:var(--accent)}
+.bx.on::after{content:"";position:absolute;left:3px;top:0;width:4px;height:8px;border:solid var(--accent-ink);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.ur{display:grid;grid-template-columns:1fr auto;gap:6px}
+.gerr{color:var(--err);font-size:11px}
+.pc{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.pc h4{margin:0 0 6px;font-family:var(--display);font-size:14px}
+.pc ul{margin:0;padding-left:16px;display:flex;flex-direction:column;gap:3px}
+.pc .st{font-weight:700;color:var(--accent)}
+.tc{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px}
+.tc h2{font-family:var(--display);font-size:38px;line-height:1.05;margin:0;text-wrap:balance}
+.tc p{margin:0;color:var(--muted);font-size:15px}
+.logo{width:56px;height:56px;border-radius:14px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:22px}
+.fict{border:1px dashed var(--line);border-radius:99px;padding:3px 12px;font-size:11.5px;color:var(--muted)}
+.cmp{display:grid;gap:0}
+.mt{font-family:var(--mono);font-size:10.5px}
+.lk{background:var(--lock);border-radius:4px;min-height:20px;padding:2px 5px;color:var(--muted);font-size:11px}
+.cc{background:var(--calc);border-radius:4px;padding:2px 5px;text-align:right;font-size:11px}
+.mat{border-left:5px solid var(--warn-line);padding-left:6px}
+.mat.y{border-color:var(--warn-line);background:var(--warn-bg)}
+.mat.g{border-color:var(--ok-line);background:var(--ok-bg)}
+.ei{border:1px solid var(--warn-line);background:var(--surface);border-radius:4px;padding:2px 6px;text-align:right;font-size:11px;min-height:20px}
+.ei.yl{background:var(--warn-bg)}
+.sug{color:var(--muted)}
+.fm{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 8px;min-width:0}
+.fm b{display:block;font-size:11px}
+.fm code{display:block;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.3}
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.steps li{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px}
+.steps li b{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:12px}
+.pan{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.pan h5{margin:0;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.sheet{background:#fff;color:#1b2a22;border:1px solid var(--line);border-radius:4px;padding:10px 12px;box-shadow:0 4px 14px rgba(0,0,0,.25);font-size:10.5px}
+.sheet h6{margin:0 0 2px;font-size:12px}
+.sheet .row{border-color:#d9e2dc;color:#1b2a22}.sheet .row.h{color:#5a6b62}
+.msgc{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:11px}
+.msgc b{display:block}
+@media (prefers-reduced-motion: reduce){
+  .bob,.eyes,.hl,.talking .mouth .open,.win.enter>*{animation:none}
+  .talking .mouth .open{transform:scaleY(.6)}
+  .seg .bar0 i{transition:none}
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Treinamento interno</div>
+    <h1>Sistema Lançamentos RH</h1>
+    <p>Vídeo animado com a Lia explicando o passo a passo, da matriz e das filiais. São 25 cenas em 5 partes, cerca de 14 minutos. As telas são ilustrações com nomes e valores fictícios.</p>
+  </header>
+
+  <section id="stagewrap" class="sw" aria-label="Vídeo de treinamento">
+    <div class="stage">
+      <div class="screen" id="screen">
+        <div class="win" id="win"></div>
+        <div class="ov" id="ov">
+          <button class="big" id="bigplay" type="button">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>
+            <span id="bigtxt">Assistir com narração</span>
+          </button>
+          <p id="ovnote">A voz vem do seu navegador, em português do Brasil. Sem voz disponível, o vídeo segue só com legendas.</p>
+        </div>
+      </div>
+      <div class="cap"><p id="cap"></p></div>
+      <aside class="pres">
+        <div class="plate"><span class="pl" id="plabel">Parte 1</span><b>Lia, do RH</b><span class="sc" id="ptitle"></span></div>
+        <div class="lia" id="lia">
+          <svg viewBox="0 0 220 270" role="img" aria-label="Lia, a assistente do RH">
+            <g class="bob">
+              <path d="M52 120C48 60 78 32 110 32c32 0 62 28 58 88-1 30-8 52-18 58H70c-10-6-17-28-18-58z" fill="#2b1d17"/>
+              <path d="M14 270c0-56 38-78 96-78s96 22 96 78z" fill="#1d6a4c"/>
+              <path d="M94 160h32v30q-16 14-32 0z" fill="#d9a07a"/>
+              <path d="M84 194l22 28-10-32zM136 194l-22 28 10-32z" fill="#14503a"/>
+              <ellipse cx="110" cy="106" rx="44" ry="52" fill="#e3ad88"/>
+              <path d="M64 104C62 62 88 46 112 46c28 0 48 18 44 58-10-22-38-32-60-28-14 2-26 14-32 28z" fill="#2b1d17"/>
+              <g class="eyes"><ellipse cx="92" cy="112" rx="4.6" ry="6.4" fill="#2a1a14"/><ellipse cx="128" cy="112" rx="4.6" ry="6.4" fill="#2a1a14"/></g>
+              <path d="M82 99q10-5 19-1M119 98q9-4 19 1" stroke="#2b1d17" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+              <circle cx="82" cy="130" r="7" fill="#e58a7a" opacity=".35"/><circle cx="138" cy="130" r="7" fill="#e58a7a" opacity=".35"/>
+              <path d="M110 118q-4 10 1 11" stroke="#b9805c" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <g class="mouth"><path class="smile" d="M96 138q14 14 28 0" stroke="#7a3028" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse class="open" cx="110" cy="142" rx="10" ry="7" fill="#6b2520"/></g>
+              <path d="M92 196l10 36M128 196l-10 36" stroke="#e9f2ec" stroke-width="3" stroke-linecap="round"/>
+              <rect x="94" y="230" width="32" height="36" rx="4" fill="#fff"/>
+              <rect x="94" y="230" width="32" height="9" rx="2" fill="#14503a"/>
+              <text x="110" y="256" text-anchor="middle" font-size="12" font-weight="700" fill="#1d6a4c" font-family="sans-serif">RH</text>
+              <g transform="rotate(8 176 234)"><rect x="152" y="206" width="48" height="62" rx="5" fill="#a9794a"/><rect x="157" y="214" width="38" height="50" rx="2" fill="#fff"/><rect x="167" y="203" width="18" height="9" rx="3" fill="#6d4a2b"/><path d="M162 226h28M162 234h28M162 242h20" stroke="#9db8a9" stroke-width="2.5"/></g>
+              <ellipse cx="158" cy="252" rx="9" ry="8" fill="#e3ad88"/>
+            </g>
+          </svg>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <nav class="prog" id="prog" aria-label="Partes do vídeo"></nav>
+
+  <div class="ctl">
+    <button class="cb" id="prev" type="button" aria-label="Cena anterior"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6zM20 5.5v13a.8.8 0 0 1-1.2.7L9 13.2a.8.8 0 0 1 0-1.4l9.8-6A.8.8 0 0 1 20 5.5z"/></svg>Anterior</button>
+    <button class="cb p" id="play" type="button"><span id="playico"></span><span id="playtxt">Assistir</span></button>
+    <button class="cb" id="next" type="button" aria-label="Próxima cena">Próxima<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5.5v13a.8.8 0 0 0 1.2.7l9.8-6a.8.8 0 0 0 0-1.4l-9.8-6A.8.8 0 0 0 4 5.5z"/></svg></button>
+    <span class="sp"></span>
+    <button class="cb" id="voz" type="button" aria-pressed="true">Narração: ligada</button>
+    <label class="sr" for="rate" style="position:absolute;left:-9999px">Velocidade</label>
+    <select class="cb" id="rate"><option value="0.9">Velocidade 0,9×</option><option value="1" selected>Velocidade 1×</option><option value="1.1">Velocidade 1,1×</option><option value="1.25">Velocidade 1,25×</option></select>
+    <label for="vsel" style="position:absolute;left:-9999px">Voz</label>
+    <select class="cb" id="vsel" hidden></select>
+    <button class="cb" id="fs" type="button">Tela cheia</button>
+  </div>
+  <p class="note" id="vnote"></p>
+  <p class="note">Quer um arquivo MP4 para o CapCut ou para compartilhar? Abra em tela cheia e grave a tela com Win + G (Windows).</p>
+
+  <section aria-label="Cenas">
+    <div class="chs" id="chs"></div>
+  </section>
+</div>
+
+<script id="data">
+const EYE='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const K=k=>k?` data-k="${k}"`:'';
+const bdg=(t,c,k)=>`<span class="bdg ${c}"${K(k)}>${t}</span>`;
+const mb=(t,c,k)=>`<span class="mb ${c||''}"${K(k)}>${t}</span>`;
+const fd=(l,v,k,c)=>`<div class="f"${K(k)}><span>${l}</span><div class="in ${c||''}">${v}</div></div>`;
+const chk=(on,t,k)=>`<span class="ck"${K(k)}><i class="bx ${on?'on':''}"></i>${t}</span>`;
+const row=(cols,cells,cls,k)=>`<div class="row ${cls||''}"${K(k)} style="grid-template-columns:${cols}">${cells.join('')}</div>`;
+const nav=(role,act)=>`<div class="tbar"><span class="brand">Lançamentos de pessoal</span>${role==='m'?`<span class="tab ${act==='f'?'on':''}"${K('tabFun')}>Funcionários</span>`:''}<span class="tab ${act==='l'?'on':''}"${K('tabLanc')}>Lançamentos</span>${role==='m'?`<span class="tab ${act==='u'?'on':''}"${K('tabUsr')}>Usuários</span>`:''}<span class="sp"></span>${mb('Atualizar','','atualizar')}${mb('◐ Modo escuro','','tema')}<span class="user"${K('user')}>${role==='m'?'Ana Matriz':'Carlos Sul'}</span>${mb('Sair','','sair')}</div>`;
+
+const C6="62px 118px 126px 88px 88px 54px 1fr";
+const emp=[["1001","João Pereira","Tratorista","Filial Sul","R$ 2.450,00","Ativo"],["1002","Maria Souza","Auxiliar agrícola","Filial Sul","R$ 1.820,50","Ativo"],["1003","Pedro Lima","Motorista","Filial Sul","R$ 2.680,00","Ativo"],["1004","Ana Costa","Encarregada","Filial Sul","R$ 3.320,00","Ativo"],["2001","Paulo Mendes","Motorista","Filial Leste","R$ 2.680,00","Inativo"]];
+const empList=()=>`<div class="body"><div class="bar"><div class="in ph" style="width:172px"${K('busca')}>Buscar por nome ou matrícula</div><div class="in" style="width:124px"${K('filtro')}>Todas as filiais <span>▾</span></div>${mb('Novo funcionário','p','novo')}</div><div class="tbl">${row(C6,['Matrícula','Nome','Função','Filial','<span class="r" style="display:block">Salário</span>','Situação',''].map(x=>`<span>${x}</span>`),'h','cols')}${emp.map((e,i)=>row(C6,[`<span>${e[0]}</span>`,`<span>${e[1]}</span>`,`<span>${e[2]}</span>`,`<span>${e[3]}</span>`,`<span class="r">${e[4]}</span>`,`<span>${e[5]}</span>`,`<span>${mb('Editar','','editar')}</span>`],i===4?'dm':'',i===4?'inativo':'')).join('')}</div></div>`;
+
+const FORM12=[["Controle Nice","OK","f1"],["442 - Horas de atrasos (horas)","2","f2"],["409 - Faltas dia (dias)","0","f3"],["Nº trab. feriado (dias)","","f4"],["Nº dobras trab. (dias)","","f5"],["109 - Prêmio só da granja (R$)","","f6"],["103 - H. extra até 60 hs (horas)","10","f7"],["H. extra acima de 60 hs (horas)","","f8"],["Prod. turma café (R$)","380","f9"],["KM motoristas (R$)","","f10"],["Comissões (R$)","","f11"],["Prêmios outros (R$)","","f12"]];
+
+const C17="62px 92px 78px 98px 58px 62px 56px 58px 78px";
+const mcell=(v,c,k)=>`<span class="${c||''}"${K(k)}>${v}</span>`;
+const mrow=(m,mc,n,s,f,vals,v12)=>row(C17,[mcell(m,'mat '+mc,'mat'),mcell(n),mcell(s,'r'),mcell(f)].concat(vals.map(v=>mcell(v,'lk','locked'))).concat([mcell(v12,'cc','calc')]));
+
+const C18="84px 62px 66px 56px 76px 62px 82px 76px";
+const r18=(a,b,yl,c,d,e,f,sug,g)=>row(C18,[mcell(a,'r'),`<span class="ei ${yl?'yl':''}"${K('c103')}>${b}</span>`,mcell(c,'cc','calc'),mcell(d,'cc','calc'),mcell(e,'cc','calc'),mcell(f,'cc','calc'),`<span class="ei"${K('c119')}><span class="sug"${K('sug')}>${sug}</span></span>`,mcell(g,'cc','calc')]);
+
+const FM=[["vh","Valor-hora","salário ÷ 220 × 1,5"],["vd","Valor-dia","salário ÷ 30"],["f012","012 - Valor feriado","valor-dia × Nº trab. feriado"],["f114","114 - Valor das dobras","valor-dia × Nº dobras trab."],["vlrthe","Vlr.T.H.E","valor-hora × H. extra até 60 hs"],["dsrhe","DSR H.E.","Vlr.T.H.E ÷ 5"],["a60","Cálculo h. acima de 60","valor-hora × H. extra acima de 60 hs"],["a60","Cálculo DSR acima de 60","Cálculo h. acima de 60 ÷ 5,2"],["a60","110 - Prêmio h. extra acima de 60","Cálculo h. acima de 60 ÷ Cálculo DSR acima de 60 (zero sem horas)"],["rest","Total km+com+prêmio+prod café","Prod. turma café + KM motoristas + Comissões + Prêmios outros"],["rest","Valor","valor-hora × 103 - Nº h. extras"],["rest","DSR extra","Valor ÷ 5"],["rest","Base da produção","Total − Valor − DSR extra"],["rest","117 - Prod","Base da produção − 119"],["conf","Conferência","Valor + DSR extra + 117 - Prod + 119"]];
+
+const MSGS=[["Período não está aberto para lançamento","A matriz ainda não liberou o mês para a filial"],["A matriz encerrou esta filial: não é mais possível alterar","Só a matriz pode reabrir"],["Só dá para encerrar quando todas as linhas estiverem concluídas","Ainda há funcionário ativo em aberto na filial"],["Sem permissão nesta unidade","Lançador tentando acessar outra filial"],["Só a matriz lança esta coluna","Lançador tentando alterar o 103 ou o 119"],["Sessão expirada. Entre novamente","A sessão acabou; faça login de novo"],["Funcionário novo não aparece nos lançamentos","Confira se está Ativo e se a unidade está correta"],["Botão Imprimir colunas desabilitado","A filial ainda não concluiu todas as linhas"]];
+
+const ctrlL=(sit,cnt)=>`<div class="bar"><div class="f"${K('comp')}><span>Competência</span><div class="in" style="width:140px">novembro de 2026</div></div><div class="f"${K('unid')}><span>Unidade</span><div class="in lock" style="width:92px">Filial Sul</div></div><div style="align-self:flex-end;display:flex;gap:8px;align-items:center"${K('sit')}>${sit}</div><span class="user" style="align-self:flex-end"${K('cont')}>${cnt}</span><span class="sp"></span>${mb('Salvar contraprova','','btn')}</div>`;
+
+const parts=["Primeiros passos","Cadastros (matriz)","Lançador","Matriz: conferência e encerramento","Passo a passo e dúvidas"];
+
+const scenes=[
+/* 1 */{p:0,t:"Abertura",screen:()=>`<div class="tc"><div class="logo">RH</div><h2>Sistema Lançamentos RH</h2><p>Treinamento passo a passo para a matriz e as filiais</p><span class="fict"${K('fict')}>Telas com nomes e valores fictícios</span></div>`,
+ steps:[["Olá! Eu sou a Lia, do RH.",""],["Neste treinamento vou mostrar, passo a passo, como usar o sistema de lançamentos de pessoal.",""],["Ele serve para a matriz e as filiais lançarem, todo mês, as informações que entram na folha de pagamento de cada funcionário.",""],["Todas as telas que você vai ver usam nomes e valores fictícios.","fict"]]},
+/* 2 */{p:0,t:"Os dois perfis",screen:()=>`<div class="body" style="padding:18px 20px"><div class="mh" style="margin-bottom:10px;font-size:15px;font-family:var(--display)">Dois perfis de usuário</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div class="pc"${K('matriz')}><h4>Matriz</h4><ul><li>Cadastra funcionários e usuários</li><li>Libera o mês para cada filial</li><li>Confere todas as colunas e contas</li><li>Encerra, reabre e imprime</li><li class="st"${K('sal')}>É o único perfil que vê salários</li></ul></div><div class="pc"${K('lanc')}><h4>Lançador (filial)</h4><ul><li>Vê só os funcionários da própria unidade</li><li>Lança as informações do mês de cada um</li><li class="st"${K('nolanc')}>Não vê salário nem valores calculados</li></ul></div></div></div>`,
+ steps:[["Existem dois perfis.",""],["A matriz cadastra funcionários e usuários, libera o mês para cada filial, confere todas as colunas e contas, encerra, reabre e imprime.","matriz"],["É o único perfil que vê salários.","sal"],["Já o lançador, que fica na filial, vê só os funcionários da própria unidade e lança as informações do mês de cada um.","lanc"],["Ele não vê salário, nem valores calculados.","nolanc"]]},
+/* 3 */{p:0,t:"As quatro situações da filial",screen:()=>{const c=(k,b,t,d,w)=>`<div class="pc"${K(k)} style="display:flex;flex-direction:column;gap:8px;min-height:190px">${b}<div>${t}</div><div class="user" style="margin-top:auto">${w}</div></div>`;return `<div class="body" style="padding:18px 16px"><div class="mh" style="margin-bottom:10px;font-size:15px;font-family:var(--display)">Situação da filial em cada competência</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">${c('s1',bdg('Fechado','b0'),'A matriz ainda não liberou. A filial não consegue lançar.','','Quem muda: a matriz libera.')}${c('s2',bdg('Aberto para lançamento','b1'),'A filial está lançando. Ainda há funcionários com linha em aberto.','','Quem muda: automático.')}${c('s3',bdg('Concluído','b2'),'Todas as linhas dos funcionários ativos foram concluídas.','','Automático, quando a última linha é concluída.')}${c('s4',bdg('Encerrado pela matriz','b3'),'A matriz fechou o mês da filial. Ninguém da filial altera mais nada.','','A matriz encerra (e pode reabrir).')}</div></div>`},
+ steps:[["Em cada mês, a filial passa por quatro situações.",""],["Fechado: a matriz ainda não liberou, e a filial não consegue lançar.","s1"],["Aberto para lançamento: a filial está lançando, e ainda há funcionários com linha em aberto.","s2"],["Concluído: todas as linhas dos funcionários ativos foram concluídas. Isso muda automaticamente, quando a última linha é concluída.","s3"],["E Encerrado pela matriz: a matriz fechou o mês da filial, e ninguém da filial altera mais nada.","s4"],["Se for preciso, a matriz pode reabrir.","s4"]]},
+/* 4 */{p:0,t:"Tela de login",screen:()=>`<div class="body" style="padding:16px;display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start"><div class="pc" style="padding:16px;display:flex;flex-direction:column;gap:10px;align-items:stretch"><div class="logo" style="width:40px;height:40px;font-size:15px;align-self:center">RH</div><div style="text-align:center;font-weight:700;font-size:15px">Lançamentos RH</div><div style="text-align:center;color:var(--muted);font-size:11px;margin-top:-6px">Entre para continuar</div>${fd('Usuário','','user','')}${fd('Senha',`<span></span><span${K('eye')}>${EYE}</span>`,'pass','')}<div class="mb p" style="justify-content:center;padding:7px"${K('enter')}>Entrar</div></div><div><div class="mh" style="margin-bottom:8px">Mensagens possíveis</div><div style="display:flex;flex-direction:column;gap:7px"><div class="msgc"${K('m1')}><b>Usuário ou senha incorretos.</b>Confira os dados.</div><div class="msgc"${K('m2')}><b>Este usuário está desativado. Fale com a matriz.</b>O cadastro existe, mas está sem permissão de entrar.</div><div class="msgc"${K('m3')}><b>Perfil de usuário não encontrado.</b>Falta o cadastro do perfil; avise quem administra o sistema.</div><div class="msgc"${K('m4')}><b>Sua sessão mudou…</b>Outro login foi feito no mesmo navegador ou a sessão expirou. Entre de novo.</div></div></div></div>`,
+ steps:[["Para entrar, digite o usuário que a matriz criou para você.","user"],["Não faz diferença se é maiúscula ou minúscula.","user"],["Depois, digite a senha.","pass"],["O ícone de olho mostra ou esconde o que você está digitando.","eye"],["Clique em Entrar e aguarde a animação.","enter"],["Se aparecer: Usuário ou senha incorretos, confira os dados.","m1"],["Se aparecer que o usuário está desativado, fale com a matriz.","m2"],["Se aparecer: Perfil de usuário não encontrado, avise quem administra o sistema.","m3"],["E se aparecer que a sua sessão mudou, é só entrar de novo.","m4"],["Um detalhe: o login vale só para a aba onde foi feito e some quando você fecha a aba.",""]]},
+/* 5 */{p:0,t:"Barra superior",screen:()=>`${nav('m','f')}<div class="body" style="padding:14px 14px"><div style="display:flex;gap:10px;margin-bottom:12px"><span class="fict"${K('abre')}>Matriz abre em Funcionários</span><span class="fict"${K('abre')}>Lançador abre direto em Lançamentos</span></div><div class="msgc" style="border-color:var(--warn-line);background:var(--warn-bg);color:var(--warn-ink);margin-bottom:10px"${K('aviso')}>Há dados novos: clique em Atualizar quando terminar de digitar.</div><div class="tbl" style="opacity:.55;padding:6px 10px">${['1001  João Pereira','1002  Maria Souza','1003  Pedro Lima'].map(x=>`<div class="row" style="grid-template-columns:1fr"><span>${x}</span></div>`).join('')}</div></div>`,
+ steps:[["Depois de entrar, o topo mostra as abas.",""],["Funcionários e Usuários aparecem só para a matriz.","tabFun tabUsr"],["Lançamentos aparece para todos.","tabLanc"],["A matriz abre em Funcionários, e o lançador abre direto em Lançamentos.","abre"],["Você também tem o botão Atualizar,","atualizar"],["o botão de modo escuro ou claro, que fica guardado no navegador,","tema"],["o nome de quem está logado","user"],["e o botão Sair.","sair"],["A tela se atualiza sozinha quando algo muda, mas não enquanto você está digitando, nem com uma janela aberta.",""],["Na tabela da matriz pode aparecer o aviso: Há dados novos, clique em Atualizar quando terminar de digitar.","aviso"]]},
+/* 6 */{p:1,t:"Aba Funcionários",screen:()=>nav('m','f')+empList(),
+ steps:[["Esta é a aba Funcionários, e só a matriz enxerga.","tabFun"],["Ela lista os funcionários de todas as filiais, com matrícula, nome, função, filial, salário e situação, ativo ou inativo.","cols"],["Os inativos aparecem esmaecidos.","inativo"],["No alto você tem a busca por nome ou matrícula,","busca"],["o filtro de filial,","filtro"],["o botão Novo funcionário","novo"],["e, em cada linha, o botão Editar.","editar"]]},
+/* 7 */{p:1,t:"Novo funcionário",screen:()=>nav('m','f')+empList()+`<div class="dim"></div><div class="md" style="width:440px"><div class="mh">Novo funcionário</div><div class="g2">${fd('Código','1007','codigo')}${fd('Nome','Carla Figueiredo','nome')}</div><div class="g2">${fd('Função','Auxiliar agrícola','funcao')}${fd('Salário (R$)','1820.50','salario')}</div><div class="f"${K('unidade')}><span>Unidade</span><div class="ur"><div class="in">Filial Sul <span>▾</span></div>${mb('+')}</div></div>${chk(1,'Ativo','ativo')}<div class="gerr ghost"${K('erro')}>Já existe um funcionário com este código.</div><div class="mf">${mb('Cancelar')}${mb('Salvar funcionário','p','salvar')}</div></div>`,
+ steps:[["Para cadastrar, clique em Novo funcionário.",""],["O código é a matrícula: é obrigatório, tem que ser único e não muda depois de criado.","codigo"],["O nome também é obrigatório e não muda.","nome"],["A função é o cargo, e pode ser alterada depois.","funcao"],["A unidade é a filial: escolha na lista. Ela não muda depois de criada. Se a tela estava filtrada por uma filial, ela já vem selecionada.","unidade"],["O salário é em reais, com centavos, não pode ser negativo e pode ser alterado.","salario"],["E o campo Ativo: marcado, o funcionário entra nos lançamentos. Desmarque quando ele sair.","ativo"],["Clique em Salvar funcionário.","salvar"],["Se o código já existir, o sistema avisa: Já existe um funcionário com este código.","erro"]]},
+/* 8 */{p:1,t:"Criar uma unidade nova",screen:()=>`<div class="body" style="padding:16px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div class="pan"><h5>Antes</h5><div class="f"><span>Unidade</span><div class="ur"><div class="in">Filial Sul <span>▾</span></div>${mb('+','','plus')}</div></div></div><div class="pan"><h5>Depois de clicar em +</h5><div class="f"${K('texto')}><span>Unidade</span><div class="ur"><div class="in ph">Digite o nome da nova filial</div>${mb('Lista','','lista')}</div></div></div></div><div class="pan" style="margin-top:14px"${K('filtros')}><h5>Filtro de filial, depois de salvar o funcionário</h5><div style="display:flex;gap:8px;flex-wrap:wrap">${mb('Todas as filiais')}${mb('Filial Sul')}${mb('Filial Leste')}${mb('Filial Norte')}${mb('Filial Oeste (nova)','p','nova')}</div></div><p class="user" style="margin-top:12px">Exemplo ilustrativo. Se o nome já existir, mesmo com maiúsculas diferentes, o sistema usa a unidade existente.</p></div>`,
+ steps:[["Precisa de uma filial nova? No campo Unidade, clique no botão de mais.","plus"],["A lista vira um campo de texto: digite o nome da nova filial.","texto"],["Se esse nome já existir, mesmo com maiúsculas diferentes, o sistema usa a unidade que já existe e não duplica.",""],["O botão passa a se chamar Lista, para você voltar à seleção.","lista"],["A unidade nova aparece nos filtros e na aba Lançamentos assim que o funcionário é salvo.","filtros nova"]]},
+/* 9 */{p:1,t:"Editar e inativos",screen:()=>`<div class="body" style="padding:14px;display:grid;grid-template-columns:330px 1fr;gap:16px;align-items:start"><div class="pc" style="display:flex;flex-direction:column;gap:8px"><div class="mh">Editar funcionário</div><div class="g2">${fd('Código','1007','locked','lock')}${fd('Nome','Carla Figueiredo','locked','lock')}</div><div class="g2">${fd('Função','Auxiliar agrícola','funcao')}${fd('Salário (R$)','1820.50','salario')}</div>${fd('Unidade','Filial Sul','locked','lock')}${chk(1,'Ativo','ativo')}</div><div class="pc"${K('nota')}><h4>Funcionário inativo</h4><p style="margin:0 0 8px">Deixa de aparecer nos lançamentos do mês e na contagem de linhas.</p><div class="user">Exemplo da contagem</div><div style="display:flex;gap:8px;align-items:center;margin-top:4px">${bdg('2 de 6 linhas','b1')}<span>→</span>${bdg('2 de 5 linhas','b1')}</div></div></div>`,
+ steps:[["Ao editar um funcionário, só três campos podem mudar:",""],["função,","funcao"],["salário","salario"],["e ativo.","ativo"],["Os outros ficam travados.","locked"],["Lembre: um funcionário inativo deixa de aparecer nos lançamentos do mês e na contagem de linhas.","nota"]]},
+/* 10 */{p:1,t:"Aba Usuários",screen:()=>`${nav('m','u')}<div class="body" style="padding:8px 12px"><div style="display:grid;grid-template-columns:318px 1fr;gap:12px;align-items:start"><div><div class="bar"><div class="in ph" style="width:120px"${K('busca')}>Buscar login ou nome</div>${mb('Novo usuário','p','novo')}</div><div class="tbl"${K('lista')}>${row("46px 78px 58px 66px 1fr",['Login','Nome','Perfil','Unidade','Situação'].map(x=>`<span>${x}</span>`),'h')}${[['matriz','Ana Matriz','Matriz','—','Ativo'],['sul','Carlos Sul','Lançador','Filial Sul','Ativo'],['leste','Marta Leste','Lançador','Filial Leste','Ativo'],['norte','Paulo Norte','Lançador','Filial Norte','Desativado']].map((u,i)=>row("46px 78px 58px 66px 1fr",u.map(x=>`<span style="font-size:10.5px">${x}</span>`),i===3?'dm':'')).join('')}</div></div><div class="pc" style="display:flex;flex-direction:column;gap:6px;padding:8px 10px"><div class="mh">Novo usuário</div><div class="g2">${fd('Login','oeste','login')}${fd('Nome','Joana Oeste','nome')}</div>${fd('Perfil','Lançador (filial) <span>▾</span>','perfil')}${fd('Unidade (filial)','Filial Sul','unidade')}${fd('Senha','••••••••','senha')}<div style="display:flex;gap:14px">${chk(0,'Mostrar senha','senha')}${chk(1,'Ativo (pode entrar no sistema)','ativo')}</div></div></div><div class="msgc" style="margin-top:8px;text-align:center"${K('restr')}>Você não pode mudar o próprio perfil nem desativar o próprio acesso.</div></div>`,
+ steps:[["Na aba Usuários a matriz gerencia os logins e as senhas do sistema.","tabUsr"],["A lista mostra login, nome, perfil, unidade e situação, ativo ou desativado, e tem busca por login ou nome.","lista busca"],["Para criar, clique em Novo usuário.","novo"],["O login é o nome de acesso, obrigatório e sem espaços.","login"],["O nome da pessoa aparece no topo e nos relatórios.","nome"],["O perfil é Lançador, de filial, ou Matriz.","perfil"],["A unidade só aparece para o perfil Lançador, e é obrigatória nele.","unidade"],["A senha é obrigatória ao criar. Ao editar, deixe em branco para manter a atual. Há a opção Mostrar senha.","senha"],["E o campo Ativo: desmarque para bloquear o acesso sem apagar o usuário.","ativo"],["Uma restrição importante: você não pode mudar o seu próprio perfil, nem desativar o seu próprio acesso.","restr"],["Isso evita que a matriz fique sem ninguém com permissão.","restr"]]},
+/* 11 */{p:2,t:"Aba Lançamentos",screen:()=>`${nav('l','l')}<div class="body" style="padding:14px">${ctrlL(bdg('Aberto para lançamento','b1'),'2 de 6 linhas concluídas')}<div class="user" style="margin:16px 0 6px">Quando o mês está fechado:</div><div style="display:flex;gap:10px;align-items:center">${bdg('Fechado','b0')}<div class="msgc"${K('aviso')}>Aguardando a matriz liberar o período.</div></div></div>`,
+ steps:[["Esta é a tela principal do mês: a aba Lançamentos.","tabLanc"],["No topo, a competência, que é o mês e o ano, e começa no mês atual.","comp"],["A unidade: o lançador vê só a sua, com o campo travado.","unid"],["Ao lado, a situação do período e a contagem de linhas concluídas.","sit cont"],["Quando o mês está fechado, aparece o aviso: Aguardando a matriz liberar o período.","aviso"],["Nesse caso, é só esperar.","aviso"]]},
+/* 12 */{p:2,t:"Cartões dos funcionários",screen:()=>{const c=(n,m,s,cl,k)=>`<div class="ec ${cl}"${K(k)}><b>${n}</b><small>Matrícula ${m}</small><em>${s}</em></div>`;return `${nav('l','l')}<div class="body" style="padding:12px">${ctrlL(bdg('Aberto para lançamento','b1'),'2 de 6 linhas concluídas')}<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"${K('cards')}>${c('João Pereira','1001 - Tratorista','Concluído (pode alterar)','g','verde card1')}${c('Maria Souza','1002 - Auxiliar agrícola','Concluído (pode alterar)','g','verde')}${c('Pedro Lima','1003 - Motorista','Em aberto','y','amarelo')}${c('Ana Costa','1004 - Encarregada','Em aberto','y','amarelo')}${c('Luiz Rocha','1005 - Operador de máquinas','Em aberto','y','amarelo')}${c('Rita Alves','1006 - Auxiliar agrícola','Em aberto','y','amarelo')}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">${c('Exemplo: mês fechado','—','Aguardando liberação','dis','aguard')}${c('Exemplo: mês encerrado','—','Encerrado (somente consulta)','','enc')}</div></div>`},
+ steps:[["Cada funcionário ativo da sua unidade aparece como um cartão, com nome, matrícula e função.","cards"],["Amarelo, Em aberto, significa que ainda não foi concluído.","amarelo"],["Verde, Concluído, pode alterar, significa que já foi concluído, mas ainda pode ser corrigido enquanto a matriz não encerrar.","verde"],["Aguardando liberação quer dizer que o mês está fechado, e o cartão fica desabilitado.","aguard"],["E Encerrado, somente consulta: a matriz encerrou, você pode abrir e ver, mas não alterar.","enc"],["Clique no cartão para abrir o formulário do funcionário.","card1"]]},
+/* 13 */{p:2,t:"Formulário com 12 campos",screen:()=>`${nav('l','l')}<div class="dim"></div><div class="md" style="width:640px"><div class="mh"${K('head')}>Pedro Lima <span class="user" style="font-weight:400">Matrícula 1003 - Motorista</span></div><div class="g3">${FORM12.map(f=>fd(f[0],f[1]||'&nbsp;',f[2]+(f[2]==='f4'?' vazio':''))).join('')}</div><div class="mf">${mb('Fechar (continua em aberto)')}${mb('Concluído','p')}</div></div>`,
+ steps:[["O formulário mostra o nome, a matrícula e a função, e doze campos.","head"],["Os valores são numéricos e aceitam centavos, menos o primeiro, que é texto livre.",""],["Controle Nice: uma observação ou controle livre do funcionário.","f1"],["442, horas de atrasos: o total de horas de atraso no mês.","f2"],["409, faltas dia: a quantidade de dias de falta.","f3"],["Número de feriados trabalhados.","f4"],["Número de dobras trabalhadas, que são os dias dobrados.","f5"],["109, prêmio só da granja: o valor do prêmio exclusivo da granja.","f6"],["103, hora extra até 60 horas.","f7"],["Hora extra acima de 60 horas, para as horas que passaram de 60.","f8"],["Produção da turma de café, em reais.","f9"],["KM de motoristas, em reais.","f10"],["Comissões, em reais.","f11"],["E prêmios outros, em reais.","f12"],["Atenção: deixar um campo vazio significa sem lançamento e remove o valor que estava gravado.","vazio"]]},
+/* 14 */{p:2,t:"Como o salvamento funciona",screen:()=>`<div class="body" style="padding:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px"><div class="pan"${K('p1')}><h5>1 · Salva ao sair do campo</h5>${fd('442 - Horas de atrasos','2<span>|</span>','')}<div class="user">Tab ou clique em outro campo. Fechar a janela não perde nada.</div></div><div class="pan"${K('p2')}><h5>2 · Campo não gravou</h5>${fd('409 - Faltas dia','…','','er')}<div class="gerr">Aviso em vermelho</div>${mb('Concluído','off')}</div><div class="pan"${K('p3')}><h5>3 · Fechar</h5>${mb('Fechar (continua em aberto)')}<div class="ec y"><b>Pedro Lima</b><em>Em aberto</em></div></div><div class="pan"${K('p4')}><h5>4 · Concluído</h5>${mb('Concluído','p')}<div class="ec g"><b>Pedro Lima</b><em>Concluído (pode alterar)</em></div></div><div class="pan"${K('p5')}><h5>5 · Reabrir o cartão</h5>${mb('Fechar')}<div class="user">O botão Concluído some. Cada alteração salva ao sair do campo.</div></div><div class="pan"${K('p6')}><h5>Resultado</h5>${bdg('Concluído','b2')}<div class="user">Todos os funcionários ativos concluídos: a matriz é avisada em tempo real.</div></div></div>`,
+ steps:[["Cada campo é salvo automaticamente quando você sai dele, clicando em outro campo ou apertando Tab.","p1"],["Você pode fechar a janela sem concluir, e nada se perde.","p1"],["Se algum campo não gravar, aparece um aviso em vermelho, e o botão Concluído fica bloqueado até você corrigir.","p2"],["O botão Fechar, continua em aberto, só fecha a janela, e o funcionário continua amarelo.","p3"],["O botão Concluído marca a linha como pronta, e o cartão fica verde.","p4"],["Depois de concluído, você ainda pode reabrir o cartão e alterar campos. Cada alteração também é salva ao sair do campo.","p5"],["Nesse caso, o botão Concluído some, e o outro botão passa a se chamar apenas Fechar.","p5"],["Quando todos os funcionários ativos estão concluídos, a unidade passa para Concluído, e a matriz é avisada em tempo real.","p6"]]},
+/* 15 */{p:2,t:"Contraprova",screen:()=>`<div class="body" style="padding:12px;display:grid;grid-template-columns:230px 1fr;gap:14px;align-items:start"><div style="display:flex;flex-direction:column;gap:12px"><div>${mb('Salvar contraprova','p','btn')}</div><div class="msgc">Imprime ou salva em PDF uma cópia do lançamento da filial.</div><div><div class="user" style="margin-bottom:4px">Com o mês fechado:</div>${mb('Salvar contraprova','off','btnoff')}</div></div><div class="sheet"${K('folha')}><h6${K('cab')}>Contraprova · Filial Sul · novembro de 2026</h6><div style="margin-bottom:6px"${K('cab')}>Emitido em 05/11/2026 às 18:30 por Carlos Sul (exemplo)</div>${row("84px 40px 40px 40px 1fr 80px",['Nome','Nice','442','409','… 12 colunas','Situação'].map(x=>`<span>${x}</span>`),'h','linhas')}${[['João Pereira','OK','2','—','—','Concluído'],['Maria Souza','—','—','1','—','Concluído'],['Pedro Lima','OK','2','0','—','Em aberto']].map(r=>row("84px 40px 40px 40px 1fr 80px",r.map(x=>`<span>${x}</span>`),'','linhas')).join('')}</div></div>`,
+ steps:[["Quando terminar, use o botão Salvar contraprova.","btn"],["Ele imprime ou salva em PDF uma cópia do lançamento da filial:","folha"],["todos os funcionários ativos, todas as doze colunas, mesmo as vazias, e a situação de cada linha, com data, hora e o nome de quem emitiu.","linhas cab"],["Serve para a filial guardar o que lançou.",""],["O botão fica desabilitado enquanto o mês está fechado.","btnoff"]]},
+/* 16 */{p:3,t:"Liberar o mês para a filial",screen:()=>`${nav('m','l')}<div class="body" style="padding:12px"><div class="bar"><div class="f"${K('comp')}><span>Competência</span><div class="in" style="width:140px">novembro de 2026</div></div><div class="f"${K('unid')}><span>Unidade</span><div class="in" style="width:100px">Filial Norte <span>▾</span></div></div><div style="align-self:flex-end">${bdg('Fechado','b0')}</div><span class="sp"></span><div style="align-self:flex-end;display:flex;gap:8px">${mb('Liberar para lançamento','p','liberar')}${mb('Imprimir colunas','off')}</div></div><div class="tbl">${row("62px 92px 78px 110px 1fr",['Matrícula','Nome','Salário','Função','Controle Nice'].map(x=>`<span>${x}</span>`),'h')}${[['3001','Rafael Melo','R$ 1.820,50','Auxiliar agrícola'],['3002','Elisa Prado','R$ 2.450,00','Tratorista']].map(r=>row("62px 92px 78px 110px 1fr",r.map((x,i)=>`<span class="${i===2?'r':''}">${x}</span>`).concat(['<span class="lk">&nbsp;</span>']))).join('')}</div><div style="display:flex;gap:10px;align-items:center;margin-top:16px"><span class="user">Depois de liberar:</span>${bdg('Aberto para lançamento','b1','aberto')}<div class="msgc"${K('aviso2')}>A filial ainda está lançando: os números podem mudar.</div></div></div>`,
+ steps:[["Na aba Lançamentos, a matriz escolhe a competência e a unidade.","comp unid"],["Quando a filial está Fechada, aparece o botão Liberar para lançamento.","liberar"],["É ele que abre o mês para a filial começar a lançar.","liberar"],["Com a filial Aberta, não há botões de ação:","aberto"],["ela ainda está lançando, e a tela avisa que os números podem mudar.","aviso2"]]},
+/* 17 */{p:3,t:"Tabela completa da matriz",screen:()=>`${nav('m','l')}<div class="body" style="padding:12px"><div class="bar">${bdg('Concluído','b2')}<span class="user">4 de 4 linhas concluídas</span></div><div class="tbl"${K('tabela')}>${row(C17,['Matrícula','Nome','Salário','Função','Controle Nice','442 Atrasos','409 Faltas','Nº feriado','012 Valor feriado'].map((x,i)=>`<span class="${i===2?'r':''}"${i<4?K('cab4'):(i===8?K('calc'):K('locked'))}>${x}</span>`),'h')}${mrow('2001','g','Paulo Mendes','R$ 2.680,00','Motorista',['OK','—','—','2'],'R$ 178,67')}${mrow('2002','g','Sônia Ramos','R$ 1.820,50','Auxiliar agrícola',['—','—','1','—'],'R$ 0,00')}${mrow('2003','y','Tiago Nunes','R$ 2.450,00','Tratorista',['—','—','—','—'],'R$ 0,00')}${mrow('2004','g','Lúcia Dias','R$ 3.320,00','Encarregada',['—','—','—','—'],'R$ 0,00')}</div><div style="display:flex;gap:8px;align-items:center;margin-top:12px"><span class="fict"${K('resto')}>31 colunas = 4 fixas + 27 de lançamento e cálculo →</span><span class="fict">Matrícula amarela: em aberto. Verde: concluída. (Exemplo)</span></div></div>`,
+ steps:[["A matriz vê uma tabela com 31 colunas, na mesma ordem da planilha:","tabela"],["matrícula, nome, salário e função,","cab4"],["seguidas de 27 colunas de lançamento e de cálculo, intercaladas.","resto"],["A coluna Matrícula fica amarela, se a linha está em aberto, ou verde, se está concluída.","mat"],["As colunas lançadas pela filial aparecem bloqueadas: a matriz só consulta.","locked"],["E as colunas calculadas se recalculam sozinhas, assim que um valor muda.","calc"]]},
+/* 18 */{p:3,t:"Colunas 103 e 119",screen:()=>`${nav('m','l')}<div class="body" style="padding:12px"><div class="tbl"${K('tabela')}>${row(C18,['Total km+com+ prêmio+prod café','103 - Nº h. extras','Valor','DSR extra','Base da produção','117 - Prod','119 - DSR prod (lançar manual)','Conferência'].map((x,i)=>`<span class="${i===0?'r':''}" style="line-height:1.15"${i===1?K('c103'):i===6?K('c119'):i===4?K('base'):''}>${x}</span>`),'h')}${r18('R$ 1.130,00','12',0,'R$ 219,27','R$ 43,85','R$ 866,87','R$ 678,42','R$ 188,45','R$ 1.130,00')}${r18('R$ 590,00','&nbsp;',0,'R$ 0,00','R$ 0,00','R$ 590,00','R$ 461,74','R$ 128,26','R$ 590,00')}${r18('R$ 300,00','&nbsp;',1,'R$ 0,00','R$ 0,00','R$ 300,00','R$ 234,78','R$ 65,22','R$ 300,00')}${r18('R$ 420,00','&nbsp;',0,'R$ 0,00','R$ 0,00','R$ 420,00','R$ 328,70','R$ 91,30','R$ 420,00')}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px"><div class="msgc"${K('amarela')}><b>Célula 103 amarela</b>A filial lançou horas em H. extra até 60 hs: a matriz precisa conferir e lançar.</div><div class="msgc"${K('c119')}><b>119 vazio</b>Usa o valor sugerido: base ÷ 4,6, em cinza dentro do campo.</div></div></div>`,
+ steps:[["São só duas as colunas que a matriz lança: 103, número de horas extras, e 119, DSR da produção.","c103 c119"],["Elas são editáveis e salvas ao sair do campo.","c103 c119"],["A matriz pode lançá-las até com o mês encerrado, desde que não seja a foto do histórico.",""],["Quando a filial lança horas em hora extra até 60 horas, a célula do 103 daquele funcionário fica amarela.","amarela"],["É o aviso de que a matriz precisa conferir e lançar.","amarela"],["O 103 é a quantidade de horas extras a pagar.","c103"],["O 119 é um valor manual:","c119"],["se você deixar vazio, o sistema usa o valor sugerido, que é a base dividida por 4,6, mostrado em cinza dentro do campo.","sug base"]]},
+/* 19 */{p:3,t:"Como as contas são feitas",screen:()=>`<div class="body" style="padding:10px 12px"><div style="display:flex;gap:8px;margin-bottom:8px;align-items:center"${K('const')}><span class="user">Constantes:</span>${mb('30 dias no mês')}${mb('220 horas no mês')}${mb('adicional de hora extra: 1,5')}${mb('sem arredondamento')}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 8px">${FM.map(f=>`<div class="fm"${K(f[0])}><b>${f[1]}</b><code>${f[2]}</code></div>`).join('')}</div></div>`,
+ steps:[["O sistema usa estas constantes: 30 dias no mês, 220 horas no mês e adicional de hora extra de 1,5.","const"],["O valor da hora é o salário dividido por 220, vezes 1,5.","vh"],["O valor do dia é o salário dividido por 30.","vd"],["Não há arredondamento nas contas.","const"],["Com isso, o feriado trabalhado é o valor do dia vezes o número de feriados,","f012"],["e as dobras são o valor do dia vezes o número de dobras.","f114"],["A hora extra até 60 é o valor da hora vezes as horas lançadas,","vlrthe"],["e o DSR dela é esse valor dividido por 5.","dsrhe"],["As horas acima de 60 têm cálculo próprio.","a60"],["No fim, a coluna Conferência soma o valor das horas extras, o DSR extra, o 117 e o 119.","conf"],["Todas as contas estão na tela, para você consultar.","rest"]]},
+/* 20 */{p:3,t:"Encerrar e reabrir a filial",screen:()=>`<div class="body" style="padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="pan"${K('A')}><h5>Filial Concluída</h5>${bdg('Concluído','b2')}<div style="display:flex;gap:8px">${mb('Encerrar filial','p')}${mb('Reabrir filial','','reabrirA')}</div></div><div class="pan"${K('B')}><h5>Encerrar pede confirmação</h5><div>Encerrar a filial? Ela será travada e uma foto do mês será gravada.</div><div class="mf" style="justify-content:flex-start">${mb('Cancelar')}${mb('Encerrar','p')}</div></div><div class="pan"${K('C')}><h5>Filial Encerrada</h5>${bdg('Encerrado pela matriz','b3')}${mb('Reabrir filial')}<div class="user">As linhas continuam concluídas: a situação volta a Concluído.</div></div><div class="pan"${K('foto')}><h5>Foto do encerramento</h5><div>Nome, função, salário, lançamentos e contas de cada funcionário ativo naquele momento.</div><div class="user">A tela do mês encerrado mostra o histórico fixo.</div></div><div class="msgc" style="grid-column:1/3"${K('aviso')}>Mês encerrado antes do recurso de foto: a tela avisa que os valores usam o cadastro atual. Reabra e encerre de novo para congelar.</div></div>`,
+ steps:[["Quando a filial está Concluída, a matriz vê os botões Encerrar filial e Reabrir filial.","A"],["Encerrar pede confirmação, trava a filial e grava uma foto do mês.","B"],["Essa foto guarda nome, função, salário, lançamentos e contas de cada funcionário ativo naquele momento.","foto"],["Depois disso, a tela do mês encerrado mostra o histórico fixo, mesmo que o cadastro mude.","foto"],["Reabrir apaga o concluído de todas as linhas, para a filial poder corrigir.","reabrirA"],["Com a filial Encerrada, o botão disponível é Reabrir filial: ele devolve o mês para a filial, e as linhas continuam concluídas.","C"],["Um aviso: se o mês foi encerrado antes desse recurso de foto, a tela avisa que os valores usam o cadastro atual. Para congelar, reabra e encerre de novo.","aviso"]]},
+/* 21 */{p:3,t:"Imprimir colunas",screen:()=>`${nav('m','l')}<div class="body" style="padding:12px"><div class="bar">${bdg('Concluído','b2')}<span class="sp"></span>${mb('Imprimir colunas','p','btn')}</div></div><div class="dim"></div><div class="md" style="width:560px"><div class="mh">Imprimir colunas</div><div class="user"${K('note')}>Matrícula e nome saem sempre. Marque as demais colunas.</div><div style="display:flex;justify-content:space-between;align-items:center">${chk(1,'Imprimir só quem tem dados nas colunas marcadas','only')}<span style="display:flex;gap:6px"${K('all')}>${mb('Marcar todas')}${mb('Limpar')}</span></div><div class="g3"${K('cols')}>${[['Salário',0],['Função',0],['Controle Nice',0],['442 - Horas de atrasos',0],['409 - Faltas dia',0],['Nº trab. feriado',0],['012 - Valor feriado',0],['109 - Prêmio só da granja',0],['103 - H. extra até 60 hs',1],['H. extra acima de 60 hs',1],['Prod. turma café',1],['KM motoristas',1]].map(c=>chk(c[1],c[0])).join('')}</div><div class="sheet"${K('cab')}><b>Filial Leste · novembro de 2026</b> · 4 funcionários · emitido por Ana Matriz (exemplo)</div><div class="gerr ghost"${K('warn')}>Marque ao menos uma coluna.</div><div class="mf">${mb('Cancelar')}${mb('Imprimir','p','imprimir')}</div></div>`,
+ steps:[["O botão Imprimir colunas só fica disponível quando a filial está Concluída ou Encerrada.","btn"],["Ao clicar, marque as colunas que você quer no relatório.","cols"],["Matrícula e nome saem sempre.","note"],["Use Marcar todas ou Limpar para agilizar.","all"],["Deixe marcada a opção Imprimir só quem tem dados nas colunas marcadas se quiser omitir funcionários sem valores nelas.","only"],["Vazio e zero contam como sem dado.","only"],["Clique em Imprimir.","imprimir"],["O sistema confere de novo se a filial continua concluída, monta a tabela com cabeçalho, com filial, competência, quantidade de funcionários, data e emitente, e abre a impressão do navegador, que também permite salvar em PDF.","cab"],["Se você não marcar nada, aparece o aviso: Marque ao menos uma coluna.","warn"]]},
+/* 22 */{p:4,t:"Passo a passo da matriz",screen:()=>`<div class="body" style="padding:14px 18px"><div class="mh" style="font-size:15px;font-family:var(--display);margin-bottom:8px">O mês, para a matriz</div><ol class="steps">${["Confirme que funcionários e usuários estão cadastrados e atualizados.","Em Lançamentos, escolha a competência e a unidade e clique em Liberar para lançamento.","Acompanhe a contagem de linhas concluídas, que atualiza sozinha.","Quando a filial estiver Concluída, lance o 103 (e o 119, se for manual) e confira as contas.","Clique em Encerrar filial e, se precisar, em Imprimir colunas.","Se algo estiver errado, use Reabrir filial."].map((t,i)=>`<li${K('s'+(i+1))}><b>${i+1}</b><span>${t}</span></li>`).join('')}</ol></div>`,
+ steps:[["Resumindo o mês para a matriz.",""],["Um: confirme que funcionários e usuários estão cadastrados e atualizados.","s1"],["Dois: em Lançamentos, escolha a competência e a unidade e clique em Liberar para lançamento.","s2"],["Três: acompanhe a contagem de linhas concluídas, que atualiza sozinha.","s3"],["Quatro: quando a filial estiver Concluída, lance o 103, número de horas extras, e o 119, se for manual, e confira as contas.","s4"],["Cinco: clique em Encerrar filial e, se precisar, em Imprimir colunas.","s5"],["Seis: se algo estiver errado, use Reabrir filial.","s6"]]},
+/* 23 */{p:4,t:"Passo a passo do lançador",screen:()=>`<div class="body" style="padding:18px"><div class="mh" style="font-size:15px;font-family:var(--display);margin-bottom:10px">O mês, para o lançador</div><ol class="steps">${["Entre, abra a aba Lançamentos e confira competência e unidade.","Clique em cada funcionário e preencha os 12 campos do mês.","Clique em Concluído em cada um.","Quando todos estiverem verdes, clique em Salvar contraprova para guardar uma cópia.","Se precisar corrigir algo, reabra o cartão e altere, enquanto a matriz não encerrar."].map((t,i)=>`<li${K('s'+(i+1))}><b>${i+1}</b><span>${t}</span></li>`).join('')}</ol></div>`,
+ steps:[["E para o lançador.",""],["Um: entre, abra a aba Lançamentos e confira competência e unidade.","s1"],["Dois: clique em cada funcionário e preencha os doze campos do mês.","s2"],["Três: clique em Concluído em cada um.","s3"],["Quatro: quando todos estiverem verdes, clique em Salvar contraprova para guardar uma cópia.","s4"],["Cinco: se precisar corrigir algo, reabra o cartão e altere, enquanto a matriz não encerrar.","s5"]]},
+/* 24 */{p:4,t:"Dúvidas e mensagens comuns",screen:()=>`<div class="body" style="padding:10px 14px"><div class="tbl" style="padding:0 8px">${row("1fr 1fr",['Mensagem ou situação','O que significa'].map(x=>`<span>${x}</span>`),'h')}${MSGS.map((m,i)=>row("1fr 1fr",m.map(x=>`<span style="font-size:11px">${x}</span>`),'','r'+(i+1))).join('')}</div></div>`,
+ steps:[["Algumas mensagens comuns.",""],["Período não está aberto para lançamento: a matriz ainda não liberou o mês para a filial.","r1"],["A matriz encerrou esta filial: não é mais possível alterar. Só a matriz pode reabrir.","r2"],["Se não consegue encerrar, é porque ainda há funcionário ativo em aberto na filial.","r3"],["Sem permissão nesta unidade: o lançador tentou acessar outra filial.","r4"],["Só a matriz lança esta coluna: o lançador tentou alterar o 103 ou o 119.","r5"],["Sessão expirada: entre novamente.","r6"],["Se um funcionário novo não aparece nos lançamentos, confira se está marcado como Ativo e se a unidade está correta.","r7"],["E se o botão Imprimir colunas está desabilitado, a filial ainda não concluiu todas as linhas.","r8"]]},
+/* 25 */{p:4,t:"Encerramento",screen:()=>`<div class="tc"><div class="logo">RH</div><h2>Ficou com dúvida?</h2><p>Fale com a matriz.</p></div>`,
+ steps:[["E é isso!",""],["Agora você já sabe usar o sistema de lançamentos do RH.",""],["Sempre que tiver dúvida, volte a este vídeo ou fale com a matriz.",""],["Até a próxima!",""]]}
+];
+</script>
+
+<script id="engine">
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var win=$('#win'),screenEl=$('#screen'),cap=$('#cap'),lia=$('#lia'),ov=$('#ov');
+  var synth=('speechSynthesis' in window)?window.speechSynthesis:null;
+  var cur=0,step=0,playing=false,run=0,voiceOn=true,rate=1,voice=null,timer=null,wd=null,finished=false,started=false,ptVoices=[];
+  var ICON_PLAY='<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>';
+  var ICON_PAUSE='<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>';
+
+  /* progresso por partes */
+  var prog=$('#prog');
+  parts.forEach(function(name,pi){
+    var idx=[];scenes.forEach(function(s,i){if(s.p===pi)idx.push(i)});
+    var b=document.createElement('button');b.type='button';b.className='seg';b.style.setProperty('--n',idx.length);
+    b.setAttribute('aria-label','Ir para a parte '+(pi+1)+': '+name);
+    b.innerHTML='<span class="bar0"><i></i></span><span class="lb">Parte '+(pi+1)+' · '+name+'</span>';
+    b.addEventListener('click',function(){goScene(idx[0])});
+    prog.appendChild(b);
+  });
+  /* capítulos */
+  var chs=$('#chs');
+  parts.forEach(function(name,pi){
+    var d=document.createElement('div');
+    var html='<h3>Parte '+(pi+1)+' · '+name+'</h3><ul>';
+    scenes.forEach(function(s,i){if(s.p===pi)html+='<li><button type="button" class="chb" data-i="'+i+'"><span class="nn">'+(i+1)+'</span><span>'+s.t+'</span></button></li>'});
+    d.innerHTML=html+'</ul>';chs.appendChild(d);
+  });
+  chs.addEventListener('click',function(e){var b=e.target.closest('.chb');if(b)goScene(+b.getAttribute('data-i'))});
+
+  function fit(){var w=screenEl.clientWidth||700;win.style.transform='scale('+(w/700)+')'}
+  if('ResizeObserver' in window){new ResizeObserver(fit).observe(screenEl)}else{window.addEventListener('resize',fit)}
+
+  function setTalking(on){lia.classList.toggle('talking',!!on)}
+  function applyHl(keys){
+    var old=win.querySelectorAll('.hl');for(var i=0;i<old.length;i++)old[i].classList.remove('hl');
+    if(!keys)return;
+    keys.split(' ').forEach(function(k){if(!k)return;var els=win.querySelectorAll('[data-k~="'+k+'"]');for(var j=0;j<els.length;j++)els[j].classList.add('hl')});
+  }
+  function updateProg(){
+    var segs=prog.querySelectorAll('.seg'),sc=scenes[cur];
+    segs.forEach(function(sg,pi){
+      var idx=[];scenes.forEach(function(s,i){if(s.p===pi)idx.push(i)});
+      var f=0;
+      if(pi<sc.p)f=1;else if(pi===sc.p){f=(idx.indexOf(cur)+(step+1)/sc.steps.length)/idx.length}
+      sg.querySelector('i').style.width=(f*100)+'%';
+      sg.classList.toggle('on',pi===sc.p);
+      if(pi===sc.p)sg.setAttribute('aria-current','true');else sg.removeAttribute('aria-current');
+    });
+    var bs=chs.querySelectorAll('.chb');
+    bs.forEach(function(b){var on=+b.getAttribute('data-i')===cur;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current')});
+  }
+  function showStep(j){
+    var sc=scenes[cur];step=j;
+    cap.textContent=sc.steps[j][0];
+    applyHl(sc.steps[j][1]);
+    updateProg();
+  }
+  function renderScene(i){
+    var sc=scenes[i];
+    win.classList.remove('enter');
+    win.innerHTML=sc.screen();
+    void win.offsetWidth;win.classList.add('enter');
+    $('#plabel').textContent='Parte '+(sc.p+1)+' · '+parts[sc.p];
+    $('#ptitle').textContent='Cena '+(i+1)+' de '+scenes.length+': '+sc.t;
+    fit();
+  }
+  function clearTimers(){clearTimeout(timer);clearTimeout(wd)}
+  function stopSpeech(){if(synth){try{synth.cancel()}catch(e){}}}
+  function runStep(){
+    var my=++run;clearTimers();stopSpeech();
+    var sc=scenes[cur],text=sc.steps[step][0];
+    showStep(step);setTalking(true);
+    function next(){if(my!==run)return;clearTimers();setTalking(false);advance()}
+    var words=text.split(/\s+/).length;
+    var est=(Math.max(1.6,words*0.40)+0.4)/rate*1000;
+    if(voiceOn&&synth&&typeof SpeechSynthesisUtterance!=='undefined'){
+      var u=new SpeechSynthesisUtterance(text);u.lang='pt-BR';if(voice)u.voice=voice;u.rate=rate;
+      u.onend=function(){if(my!==run)return;clearTimeout(wd);timer=setTimeout(next,260)};
+      u.onerror=function(){if(my!==run)return;clearTimeout(wd);timer=setTimeout(next,est)};
+      try{synth.speak(u)}catch(e){timer=setTimeout(next,est);return}
+      wd=setTimeout(next,est*2.2+3000);
+    }else{
+      timer=setTimeout(next,est);
+    }
+  }
+  function advance(){
+    var sc=scenes[cur];
+    if(step<sc.steps.length-1){step++;runStep();return}
+    if(cur<scenes.length-1){cur++;step=0;renderScene(cur);var my=run;timer=setTimeout(function(){if(playing&&my===run)runStep()},550);return}
+    finish();
+  }
+  function finish(){
+    playing=false;finished=true;run++;clearTimers();setTalking(false);setPlayUi();
+    $('#bigtxt').textContent='Rever do início';$('#ovnote').textContent='Fim do treinamento. Escolha uma cena abaixo ou assista de novo.';ov.hidden=false;
+  }
+  function setPlayUi(){
+    $('#playico').innerHTML=playing?ICON_PAUSE:ICON_PLAY;
+    $('#playtxt').textContent=playing?'Pausar':(started&&!finished?'Continuar':'Assistir');
+  }
+  function play(){
+    if(finished){finished=false;cur=0;step=0;renderScene(0)}
+    playing=true;started=true;ov.hidden=true;setPlayUi();runStep();
+  }
+  function pause(){playing=false;run++;clearTimers();stopSpeech();setTalking(false);setPlayUi()}
+  function goScene(i){
+    i=Math.max(0,Math.min(scenes.length-1,i));
+    var was=playing;run++;clearTimers();stopSpeech();setTalking(false);
+    finished=false;cur=i;step=0;renderScene(cur);showStep(0);
+    if(was)runStep();
+  }
+
+  $('#bigplay').addEventListener('click',play);
+  $('#play').addEventListener('click',function(){playing?pause():play()});
+  $('#prev').addEventListener('click',function(){goScene(cur-1)});
+  $('#next').addEventListener('click',function(){goScene(cur+1)});
+  $('#voz').addEventListener('click',function(){
+    voiceOn=!voiceOn;this.setAttribute('aria-pressed',String(voiceOn));this.textContent='Narração: '+(voiceOn?'ligada':'desligada');
+    if(playing)runStep();else stopSpeech();
+  });
+  $('#rate').addEventListener('change',function(){rate=parseFloat(this.value)||1;if(playing)runStep()});
+  $('#vsel').addEventListener('change',function(){voice=ptVoices[+this.value]||null;if(playing)runStep()});
+  var fsb=$('#fs');
+  if(!document.fullscreenEnabled){fsb.hidden=true}
+  fsb.addEventListener('click',function(){
+    var el=$('#stagewrap');
+    try{
+      if(document.fullscreenElement){var p=document.exitFullscreen();if(p&&p.catch)p.catch(function(){})}
+      else if(el.requestFullscreen){var q=el.requestFullscreen();if(q&&q.catch)q.catch(function(){})}
+    }catch(e){}
+  });
+  document.addEventListener('fullscreenchange',function(){setTimeout(fit,50)});
+  document.addEventListener('keydown',function(e){
+    var t=e.target&&e.target.tagName;
+    if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;
+    if(e.key==='ArrowRight'){goScene(cur+1)}
+    else if(e.key==='ArrowLeft'){goScene(cur-1)}
+    else if(e.key===' '&&t!=='BUTTON'){e.preventDefault();playing?pause():play()}
+  });
+
+  /* vozes */
+  function score(v){var s=0;if(/pt[-_]BR/i.test(v.lang))s+=10;if(/francisca|maria|luciana|vit[oó]ria|google|natural|online/i.test(v.name))s+=3;return s}
+  function loadVoices(){
+    var note=$('#vnote'),sel=$('#vsel');
+    if(!synth){note.textContent='Este navegador não tem voz de narração: acompanhe pelas legendas.';$('#voz').hidden=true;return}
+    var all=synth.getVoices()||[];
+    ptVoices=all.filter(function(v){return /^pt([-_]|$)/i.test(v.lang)}).sort(function(a,b){return score(b)-score(a)});
+    if(ptVoices.length){
+      voice=ptVoices[0];
+      sel.innerHTML=ptVoices.map(function(v,i){return '<option value="'+i+'">'+v.name+' ('+v.lang+')</option>'}).join('');
+      sel.hidden=ptVoices.length<2;
+      note.textContent='Voz da narração: '+voice.name+'. Ela vem do seu navegador e do seu sistema; a escolha de voz aparece quando há mais de uma.';
+    }else{
+      voice=null;sel.hidden=true;
+      note.textContent=all.length?'Não encontrei voz em português neste navegador. A narração usa a voz padrão e pode soar estranha; as legendas acompanham tudo.':'As vozes ainda estão carregando. Se nenhuma aparecer, o vídeo segue só com legendas.';
+    }
+  }
+  if(synth){loadVoices();if('onvoiceschanged' in synth)synth.onvoiceschanged=loadVoices}else{loadVoices()}
+
+  renderScene(0);showStep(0);setPlayUi();
+})();
+</script>
+
+</body></html>
